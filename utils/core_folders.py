@@ -6,6 +6,8 @@ def core():
         "images_folder": "images",
         "processed_folder": "success",
         "failed_folder": "failed",
+        "json_sorter" : "json_sorter",
+        "images_sorter" : "images_sorter",
         "image_extensions": ('.TIF', '.png', '.jpg', '.jpeg')
     }
 
