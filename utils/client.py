@@ -67,7 +67,6 @@ class TextractOCR:
             shutil.move(input_file, self.failed_ocr_folder)
             return False
 
-
         # Extract confidence scores for lines
         line_confidences = [block["Confidence"] for block in response["Blocks"] if block["BlockType"] == "LINE"]
         
