@@ -3,7 +3,7 @@ import os
 class coreConfig():
     def __init__(self):
         """
-        Initializes the FolderManager class and retrieves folder and configuration details.
+        Initializes the coreConfig() class and retrieves folder and configuration details.
         """
         self.folders = self.requiredFolders()
         self.config = self.requiredValues()

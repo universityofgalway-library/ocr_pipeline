@@ -11,6 +11,8 @@ __pycache__/
 *.so
 *.jpg
 *.json
+*.txt 
+
 
 # Distribution / packaging
 .Python
