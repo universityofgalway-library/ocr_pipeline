@@ -3,17 +3,20 @@ import json
 import boto3
 import shutil
 from pathlib import Path
-from utils.core_folders import core
+from utils.config import config
 
 '''
 CONVERSION OF IMAGES TO JSON
 '''
 
 # Get valid image extensions
-core_folders_name = core()
-image_extensions = core_folders_name["image_extensions"]
-json_sorter = core_folders_name["json_sorter"]
-images_sorter = core_folders_name["images_sorter"]
+get_setting = config()
+json_sorter = get_setting["json_sorter"]
+input_folder = get_setting["input_folder"]
+images_sorter = get_setting["images_sorter"]
+image_extensions = get_setting["image_extensions"]
+output_extension = get_setting["output_extension"]
+
 
 
 def extract_json_from_image(input_file, output_file):
@@ -57,7 +60,7 @@ def move_extracted_images(directory_name, file_path):
 def select_image(parent_input_folder):
     for root, _, files in os.walk(parent_input_folder):
         for filename in files:
-            if '.' +  filename.split('.')[1] in image_extensions:
+            if '.' +  filename.split('.')[1] in image_extensions: # Ensure the selected file is a valid images
                 input_file = os.path.join(root, filename)
                 
                 # Get the directory name for output
@@ -66,7 +69,7 @@ def select_image(parent_input_folder):
                 output_directory.mkdir(parents=True, exist_ok=True)
                 
                 # Prepare the output file path
-                output_file = os.path.join(output_directory, filename.rsplit('.', 1)[0] + '.json')#
+                output_file = os.path.join(output_directory, filename.rsplit('.', 1)[0] + output_extension)
 
                 # Print file paths for debugging
                 print(f"Processing file: {input_file}")
@@ -79,5 +82,4 @@ def select_image(parent_input_folder):
                 move_extracted_images(directory_name, input_file)
 
 # Define the parent input folder
-parent_input_folder = 'input'
-select_image(parent_input_folder)
+select_image(input_folder)
