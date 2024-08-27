@@ -41,7 +41,7 @@ class TextractOCR:
         self.client = boto3.client("textract")
 
 
-    def delete_empty_folder(self, directory_path) -> None:
+    def delete_empty_folder(self, directory_path: str) -> None:
         """
         Deletes the specified directory if it is empty.
 
@@ -52,7 +52,7 @@ class TextractOCR:
             os.rmdir(directory_path)
 
 
-    def extract_json_from_image(self, input_file, output_file) -> bool: 
+    def extract_json_from_image(self, input_file: str, output_file: str) -> bool: 
         """
         Extracts text from image in the input_folder's path using AWS Textract and saves the result as a JSON file to json_sorter folder.
 
@@ -107,7 +107,7 @@ class TextractOCR:
         return True
 
 
-    def move_extracted_images(self, directory_name, file_path) -> None:
+    def move_extracted_images(self, directory_name: str, file_path: str) -> None:
         """
         Moves the processed image file to the designated subdirectory within the images_sorter folder
         and deletes the original directory if empty.
@@ -127,7 +127,7 @@ class TextractOCR:
 
 
     # Entry point to the script
-    def select_image(self, parent_input_folder) -> None:
+    def select_image(self, parent_input_folder: str) -> None:
         """
         Selects image files from the specified folder, processes them, and organises them based on the OCR results.
 

@@ -29,7 +29,7 @@ class SortOCR:
         self.log_activity = LogActivities(self.logs_folder)
 
     @staticmethod
-    def contains_subfolders(folder_path) -> bool:
+    def contains_subfolders(folder_path: str) -> bool:
         """
             Checks if the specified folder contains any subfolders.
 
@@ -45,7 +45,7 @@ class SortOCR:
         return False
 
 
-    def process_sub_folders(self, parent_folder_path, file_extention,destination) -> None:
+    def process_sub_folders(self, parent_folder_path: str, file_extention: str,destination: str) -> None:
         """
         Processes subfolders within the specified parent folder, moving files with a specified extension to a destination.
 
@@ -71,7 +71,7 @@ class SortOCR:
             # Delete the parent folder from the sorting forlder after processing
             shutil.rmtree(os.path.join(parent_folder_path,subfolder))
     
-    def split_files(self, parent_folder_path,filename,subfolder,destination) -> None:
+    def split_files(self, parent_folder_path: str,filename: str,subfolder: str,destination: str) -> None:
         """
         Moves a file from its original location to a new structured destination folder.
 
