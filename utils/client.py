@@ -3,17 +3,22 @@ import json
 import boto3
 import shutil
 from pathlib import Path
-from utils.config import coreConfig
+from utils.config import CoreConfig
+from utils.log import LogActivities
 
 class TextractOCR: 
+    """
+    A class to handle OCR processing using AWS Textract, managing folder paths, configurations, 
+    and interactions with the AWS Textract service.
+    """
     def __init__(self):
 
         """
-        Initialize the TextractOCR class with required folder paths and parameters from the config file.
+        Initialise the TextractOCR class with required folder paths and parameters from the config file.
         """
 
         # Initialisation of required folders and parameters
-        core_config = coreConfig()
+        core_config = CoreConfig()
         self.folders = core_config.requiredFolders()
         self.parameters = core_config.requiredValues()
         
@@ -28,6 +33,9 @@ class TextractOCR:
         self.image_extensions = self.parameters["image_extensions"]
         self.output_extension = self.parameters["output_extension"]
         self.low_confidence_threshold = self.parameters["low_confidence_threshold"]
+
+        # Logging initailisation has to come after logs folder name
+        self.log_activity = LogActivities(self.logs_folder)
 
         # AWS Textract client
         self.client = boto3.client("textract")
@@ -51,36 +59,33 @@ class TextractOCR:
         Args:
             input_file (str): The path to the input image file.
             output_file (str): The path to the output JSON file.
-
         Returns:
             bool: True if the image was successfully processed and saved, False otherwise.
         """
         
         try:
             with open(input_file, "rb") as document:
-                # Call Textract to analyze the document
+                # Call Textract to analyse the document
                 response = self.client.detect_document_text(
                     Document={"Bytes": document.read()}
                 )
         except Exception as e:
-            print(f"Error processing file {input_file}: {e}")
+            self.log_activity.error(f"Error processing OCR for file {input_file}: {e}")
             shutil.move(input_file, self.failed_ocr_folder)
             return False
 
         # Extract confidence scores for lines
         line_confidences = [block["Confidence"] for block in response["Blocks"] if block["BlockType"] == "LINE"]
         
-        # for one_value in line_confidences:
-        #     with open("line_confidence_score.txt", "a", encoding="UTF-8") as f: 
-        #         f.write(input_file + ": " + str(one_value) + "\n")
-
         # Calculate the average confidence score
         if line_confidences:
             average_confidence = sum(line_confidences) / len(line_confidences)
             
             # Log the average confidence score of each file
-            with open(f"{self.logs_folder.rstrip('/') + '/'}avg_confidence_score.txt", "a", encoding="UTF-8") as f: 
-                f.write(input_file + ": " + str(average_confidence) + "\n")
+            self.log_activity.confidence(input_file,average_confidence)
+            
+            # with open(f"{self.logs_folder.rstrip('/') + '/'}avg_confidence_score.txt", "a", encoding="UTF-8") as f: 
+            #     f.write(input_file + ": " + str(average_confidence) + "\n")
         else:
             # Handle case where no lines are detected
             average_confidence = 0
@@ -97,7 +102,7 @@ class TextractOCR:
                 json.dump(response, json_file, indent=4)
             print(f"Processed file saved to {output_file}")
         except Exception as e:
-            print(f"Error saving file {output_file}: {e}")
+            self.log_activity.error(f"Error saving file {output_file}: {e}")
 
         return True
 
@@ -124,7 +129,7 @@ class TextractOCR:
     # Entry point to the script
     def select_image(self, parent_input_folder) -> None:
         """
-        Selects image files from the specified folder, processes them, and organizes them based on the OCR results.
+        Selects image files from the specified folder, processes them, and organises them based on the OCR results.
 
         Args:
             parent_input_folder (str): The path to the parent folder containing images to process.

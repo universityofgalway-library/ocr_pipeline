@@ -1,9 +1,12 @@
 import os
 
-class coreConfig():
+class CoreConfig:
+    """
+    A class to manage configuration settings and folder paths required for the OCR processing pipeline.
+    """
     def __init__(self):
         """
-        Initializes the coreConfig() class and retrieves folder and configuration details.
+        Initialises the coreConfig() class and retrieves folder and configuration details.
         """
         self.folders = self.requiredFolders()
         self.config = self.requiredValues()
