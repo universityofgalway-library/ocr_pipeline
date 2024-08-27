@@ -34,4 +34,4 @@ if __name__ == '__main__':
 
     # Define the parent input folder
     textract_ocr.select_image(input_folder)
-    sort_ocr.main()
+    sort_ocr.start_sorting()

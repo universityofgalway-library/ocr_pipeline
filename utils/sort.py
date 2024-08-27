@@ -28,8 +28,8 @@ class SortOCR:
         # Logging initailisation has to come after logs folder name
         self.log_activity = LogActivities(self.logs_folder)
 
-
-    def contains_subfolders(self, folder_path) -> bool:
+    @staticmethod
+    def contains_subfolders(folder_path) -> bool:
         """
             Checks if the specified folder contains any subfolders.
 
@@ -70,7 +70,6 @@ class SortOCR:
                     
             # Delete the parent folder from the sorting forlder after processing
             shutil.rmtree(os.path.join(parent_folder_path,subfolder))
-
     
     def split_files(self, parent_folder_path,filename,subfolder,destination) -> None:
         """
@@ -110,7 +109,7 @@ class SortOCR:
         except Exception as e:
             self.log_activity.error(f"Error moving file: {e}")
 
-    def main(self):
+    def start_sorting(self):
         """
         Executes the main logic to process and organise OCR files by checking and processing subfolders in the 
         JSON and images sorting directories.
@@ -121,8 +120,5 @@ class SortOCR:
         if self.contains_subfolders(self.json_sorter_folder):
             self.process_sub_folders(self.json_sorter_folder, self.output_extension, self.json_folder)
 
-
         if self.contains_subfolders(self.images_sorter_folder):
             self.process_sub_folders(self.images_sorter_folder, self.image_extensions, self.images_folder)
-
-
