@@ -15,16 +15,13 @@ Classes:
 
 Usage:
     Run this script to perform OCR processing on images and sort the results into folders.
-
 """
-
 
 from utils.client import TextractOCR
 from utils.config import CoreConfig
 from utils.sort import SortOCR
 
 # Instantiate and verify all required folders
-
 core_config = CoreConfig()
 core_config.verifyFolders()
 input_folder = core_config.requiredFolders()["input_folder"]
