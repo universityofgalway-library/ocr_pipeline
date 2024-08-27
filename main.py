@@ -17,24 +17,62 @@ Usage:
     Run this script to perform OCR processing on images and sort the results into folders.
 """
 
-from utils.client import TextractOCR
-from utils.config import CoreConfig
+import os
+import time
+from datetime import datetime
 from utils.sort import SortOCR
+from utils.config import CoreConfig
+from utils.client import TextractOCR
+from utils.log import LogActivities
 from utils.alto import AltoGenerator
+from utils.check import CheckEmptyFolder
 
 # Instantiate and verify all required folders
 core_config = CoreConfig()
 core_config.verifyFolders()
-input_folder = core_config.requiredFolders()["input_folder"]
+parameters = core_config.requiredValues()
+folders = core_config.requiredFolders()
+logs_folder = folders["logs_folder"]
+input_folder =folders["input_folder"]
+
+retry_count = 0
+max_retries = parameters['max_retries']  # Maximum number of retries
+retry_delay = parameters['retry_delay']  # Delay in seconds before retrying
+
 
 
 if __name__ == '__main__':
     # Instantiate the TextractOCR class
-    # textract_ocr = TextractOCR()
-    # sort_ocr = SortOCR()
-    alto_xml = AltoGenerator()
+    sort_ocr = SortOCR()
+    check = CheckEmptyFolder()
+    textract_ocr = TextractOCR()
+    log_activity = LogActivities(logs_folder)
+
 
     # Define the parent input folder
-    # textract_ocr.select_image(input_folder)
-    # sort_ocr.start_sorting()
-    # alto_xml.main()
+    textract_ocr.select_image(input_folder)
+    sort_ocr.start_sorting()
+
+
+    while retry_count < max_retries:
+        try:
+            while check.is_json_folder_empty() and check.is_images_folder_empty():
+                current_datetime = datetime.now()
+                print(f'grab a cup of coffee, I am still running ... {current_datetime} ') 
+                
+                # Begin ALTO XML generation
+                AltoGenerator()  
+            
+                time.sleep(3)
+            else:
+                current_datetime = datetime.now()
+                log_activity.error(f'Failed to run, the JSON / Images folder is empty ... {current_datetime} ')
+                break  # Exit the retry loop if successful
+        except (ValueError, FileNotFoundError) as e:
+            log_activity.error(f"Error encountered: {e}")
+            retry_count += 1
+            if retry_count < max_retries:
+                log_activity.error(f"Retrying in {retry_delay} seconds...")
+                time.sleep(retry_delay)
+    else:
+        log_activity.error(f"Failed to run after {max_retries} retries. Exiting.")

@@ -41,6 +41,8 @@ class CoreConfig:
             dict: Dictionary with configuration settings.
         """
         return {
+            "retry_delay" : 10,
+            "max_retries" : 500, 
             "low_confidence_threshold" : 75,
             "output_extension" : ".json",#
             "rename_failed_json" : "json_files",
@@ -72,6 +74,8 @@ class CoreConfig:
 
         return {
             "input_folder": "input",
+            "processed_folder": "core_folders/success_alto",
+            # core folders below
             "core_folders": "core_folders",
             "logs_folder": "core_folders/logs",
             "json_folder": "core_folders/json",
@@ -80,7 +84,6 @@ class CoreConfig:
             "failed_folder": "core_folders/failed_alto",
             "images_sorter" : "core_folders/images_sorter",
             "failed_ocr_folder": "core_folders/failed_ocr",
-            "processed_folder": "core_folders/success_alto",
             "low_confidence_folder": "core_folders/failed_low_confidence",
         }
 

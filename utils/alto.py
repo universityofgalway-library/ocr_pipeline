@@ -210,6 +210,7 @@ class AltoGenerator():
         with open(output_file, 'w',encoding='utf-8') as f:
             f.write(xml_string_pretty)   
 
+    @staticmethod
     def get_image_size(image_path):
         with Image.open(image_path) as img:
             return img.size
