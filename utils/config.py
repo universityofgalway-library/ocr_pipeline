@@ -42,7 +42,9 @@ class CoreConfig:
         """
         return {
             "low_confidence_threshold" : 75,
-            "output_extension" : ".json",
+            "output_extension" : ".json",#
+            "rename_failed_json" : "json_files",
+            "rename_failed_image" : "image_files",
             "image_extensions": ('.TIF', '.png', '.jpg', '.jpeg'),
         }
 

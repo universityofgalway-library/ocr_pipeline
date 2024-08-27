@@ -20,6 +20,7 @@ Usage:
 from utils.client import TextractOCR
 from utils.config import CoreConfig
 from utils.sort import SortOCR
+from utils.alto import AltoGenerator
 
 # Instantiate and verify all required folders
 core_config = CoreConfig()
@@ -29,9 +30,11 @@ input_folder = core_config.requiredFolders()["input_folder"]
 
 if __name__ == '__main__':
     # Instantiate the TextractOCR class
-    textract_ocr = TextractOCR()
-    sort_ocr = SortOCR()
+    # textract_ocr = TextractOCR()
+    # sort_ocr = SortOCR()
+    alto_xml = AltoGenerator()
 
     # Define the parent input folder
-    textract_ocr.select_image(input_folder)
-    sort_ocr.start_sorting()
+    # textract_ocr.select_image(input_folder)
+    # sort_ocr.start_sorting()
+    # alto_xml.main()

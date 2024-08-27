@@ -12,7 +12,7 @@ __pycache__/
 *.jpg
 *.json
 *.txt
-
+**/.*txt
 
 
 # Distribution / packaging
