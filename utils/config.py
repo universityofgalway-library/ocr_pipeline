@@ -1,5 +1,4 @@
 import os
-# file_path = r"Z:\OCR outputs\p155_kerby_miller\Letters\ocr_test\testing.jpg"
 
 class CoreConfig:
     """
@@ -44,7 +43,7 @@ class CoreConfig:
         return {
             "retry_delay" : 10,
             "max_retries" : 500, 
-            "low_confidence_threshold" : 75,
+            "low_confidence_threshold" : 75, # Change to match the prefered avg confidence threshold 
             "output_extension" : ".json",
             "rename_failed_json" : "json_files",
             "rename_failed_image" : "image_files",
@@ -86,7 +85,8 @@ class CoreConfig:
             "images_sorter" : "core_folders/images_sorter",
             "failed_ocr_folder": "core_folders/failed_ocr",
             "low_confidence_folder": "core_folders/failed_low_confidence",
-            # libnas path
+            
+            # libnas path (Change to match your server or computer LibNas Path)
             "libnas_input" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\input", 
             "libnas_output" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\output",
         }

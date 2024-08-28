@@ -17,7 +17,6 @@ Usage:
     Run this script to perform OCR processing on images and sort the results into folders.
 """
 
-import os
 import time
 from datetime import datetime
 from utils.sort import SortOCR
@@ -40,8 +39,6 @@ input_folder =folders["input_folder"]
 retry_count = 0
 max_retries = parameters['max_retries']  # Maximum number of retries
 retry_delay = parameters['retry_delay']  # Delay in seconds before retrying
-
-
 
 if __name__ == '__main__':
     # Instantiate required classes
