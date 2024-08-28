@@ -88,3 +88,4 @@ The `CoreConfig` class also includes specific paths for input and output folders
 "libnas_input": r"z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\input",
 "libnas_output": r"z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\output",
 ```
+Make changes to match your desire path on LibNas.
