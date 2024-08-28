@@ -177,8 +177,6 @@ class AltoGenerator():
                 os.rmdir(top_images_folder_path)
 
 
-            # Order: 3
-
     def generate_alto_xml(self, json_files, output_file, top_json_folder, subfolder):
 
         root = Element("alto", attrib={
