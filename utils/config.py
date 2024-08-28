@@ -1,4 +1,5 @@
 import os
+# file_path = r"Z:\OCR outputs\p155_kerby_miller\Letters\ocr_test\testing.jpg"
 
 class CoreConfig:
     """
@@ -85,6 +86,9 @@ class CoreConfig:
             "images_sorter" : "core_folders/images_sorter",
             "failed_ocr_folder": "core_folders/failed_ocr",
             "low_confidence_folder": "core_folders/failed_low_confidence",
+            # libnas path
+            "libnas_input" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\input", 
+            "libnas_output" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\output",
         }
 
 

@@ -25,6 +25,7 @@ from utils.config import CoreConfig
 from utils.client import TextractOCR
 from utils.log import LogActivities
 from utils.alto import AltoGenerator
+from utils.libnas import LibNas
 from utils.check import CheckEmptyFolder
 
 # Instantiate and verify all required folders
@@ -42,13 +43,16 @@ retry_delay = parameters['retry_delay']  # Delay in seconds before retrying
 
 
 if __name__ == '__main__':
-    # Instantiate the TextractOCR class
+    # Instantiate required classes
+    libnas = LibNas()
     sort_ocr = SortOCR()
     check = CheckEmptyFolder()
     textract_ocr = TextractOCR()
     log_activity = LogActivities(logs_folder)
 
-
+    # Get required folders and files from libnas
+    libnas.copy_from_libnas()
+    
     # Define the parent input folder
     textract_ocr.select_image(input_folder)
     sort_ocr.start_sorting()
@@ -76,3 +80,7 @@ if __name__ == '__main__':
                 time.sleep(retry_delay)
     else:
         log_activity.error(f"Failed to run after {max_retries} retries. Exiting.")
+
+    # Return processed files to libNas
+    libnas.send_to_libnas()
+    
