@@ -197,7 +197,7 @@ class AltoGenerator():
         ocr_processing_step = SubElement(ocr_processing, "ocrProcessingStep")
         processing_software = SubElement(ocr_processing_step, "processingSoftware")
         software_name = SubElement(processing_software, "softwareName")
-        software_name.text = "Abbyy Finder"
+        software_name.text = "Textract"
 
         layout = SubElement(root, "Layout")
 

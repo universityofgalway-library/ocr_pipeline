@@ -31,6 +31,7 @@ from utils.check import CheckEmptyFolder
 # Instantiate and verify all required folders
 core_config = CoreConfig()
 core_config.verifyFolders()
+
 parameters = core_config.requiredValues()
 folders = core_config.requiredFolders()
 logs_folder = folders["logs_folder"]
