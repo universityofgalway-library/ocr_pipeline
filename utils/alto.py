@@ -22,7 +22,7 @@ class AltoGenerator():
         self.folders = core_config.requiredFolders()
         self.parameters = core_config.requiredValues()
         
-        # Folders nmaes from config.py
+        # Folders names from config.py
         self.logs_folder = self.folders["logs_folder"]
         self.json_folder = self.folders["json_folder"]
         self.failed_folder = self.folders["failed_folder"]
