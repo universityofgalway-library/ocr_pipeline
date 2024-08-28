@@ -46,13 +46,13 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## CoreConfig Class Documentation
+## CoreConfig Class
 
 ## Overview
 
 The `CoreConfig` class is designed to manage the configuration settings and folder paths required for the OCR processing pipeline. This class handles the creation of necessary folders and provides configuration values used throughout the pipeline.
 
-** make changes to it with caution **
+`make changes to it with caution`
 
 ## Key Features
 
@@ -87,3 +87,4 @@ The `CoreConfig` class also includes specific paths for input and output folders
 ```python
 "libnas_input": r"z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\input",
 "libnas_output": r"z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\output",
+```
