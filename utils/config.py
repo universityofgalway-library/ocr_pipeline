@@ -71,20 +71,20 @@ class CoreConfig:
         Returns:
             dict: Dictionary mapping folder names to their paths.
         """
-
+        root_folder = "core_folders"
         return {
             "input_folder": "input",
-            "processed_folder": "core_folders/success_alto",
+            "processed_folder": f"{root_folder}/success_alto",
             # core folders below
-            "core_folders": "core_folders",
-            "logs_folder": "core_folders/logs",
-            "json_folder": "core_folders/json",
-            "images_folder": "core_folders/images",
-            "json_sorter" : "core_folders/json_sorter",
-            "failed_folder": "core_folders/failed_alto",
-            "images_sorter" : "core_folders/images_sorter",
-            "failed_ocr_folder": "core_folders/failed_ocr",
-            "low_confidence_folder": "core_folders/failed_low_confidence",
+            "core_folders": root_folder,
+            "logs_folder": f"{root_folder}/logs",
+            "json_folder": f"{root_folder}/json",
+            "images_folder": f"{root_folder}/images",
+            "json_sorter" : f"{root_folder}/json_sorter",
+            "failed_folder": f"{root_folder}/failed_alto",
+            "images_sorter" : f"{root_folder}/images_sorter",
+            "failed_ocr_folder": f"{root_folder}/failed_ocr",
+            "low_confidence_folder": f"{root_folder}/failed_low_confidence",
             
             # libnas path (Change to match your server or computer LibNas Path)
             "libnas_input" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\input", 
