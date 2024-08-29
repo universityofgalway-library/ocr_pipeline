@@ -25,24 +25,27 @@ class AltoGenerator():
         # Folders names from config.py
         self.logs_folder = self.folders["logs_folder"]
         self.json_folder = self.folders["json_folder"]
+        self.text_folder = self.folders["text_folder"]
         self.failed_folder = self.folders["failed_folder"]
         self.images_folder = self.folders["images_folder"]
         self.processed_folder = self.folders["processed_folder"]
         
         # Parameters from config.py 
         self.image_extensions = self.parameters["image_extensions"]
-        self.output_extension = self.parameters["output_extension"]
+        self.output_extension_json = self.parameters["output_extension_json"]
+        self.output_extension_text = self.parameters["output_extension_text"]
         self.rename_failed_json = self.parameters["rename_failed_json"]
         self.rename_failed_image = self.parameters["rename_failed_image"]
+        self.rename_failed_text = self.parameters["rename_failed_text"]
         self.low_confidence_threshold = self.parameters["low_confidence_threshold"]
 
         # Logging initailisation has to come after logs folder name
         self.log_activity = LogActivities(self.logs_folder)
 
 
-        self.process_files(self.json_folder, self.failed_folder, self.images_folder, self.image_extensions, self.processed_folder)
+        self.process_files(self.json_folder, self.failed_folder, self.images_folder, self.text_folder, self.image_extensions, self.processed_folder)
 
-    def process_files(self, json_folder, failed_folder, images_folder, image_extensions, processed_folder):
+    def process_files(self, json_folder, failed_folder, images_folder, text_folder, image_extensions, processed_folder):
    
             # List all folders in the json folder sorted in alphabetical order
             json_folders = sorted([d for d in os.listdir(json_folder) if os.path.isdir(os.path.join(json_folder, d))], reverse=True)
@@ -56,12 +59,13 @@ class AltoGenerator():
             top_json_folder = json_folders[0]
             top_json_folder_path = os.path.join(json_folder, top_json_folder) 
             top_images_folder_path = os.path.join(images_folder, top_json_folder) 
+            top_text_folder_path = os.path.join(text_folder, top_json_folder) 
         
             
             subfolder_top_json_folder =  sorted([subfolders for subfolders in os.listdir(top_json_folder_path) if os.path.isdir(os.path.join(top_json_folder_path, subfolders))], reverse=True)
         
             for subfolder in subfolder_top_json_folder:
-                
+                text_subfolder_path = os.path.join(top_text_folder_path, subfolder)
                 json_subfolder_path = os.path.join(top_json_folder_path, subfolder)
                 image_subfolder_path = os.path.join(top_images_folder_path, subfolder)
 
@@ -71,6 +75,7 @@ class AltoGenerator():
                 # Check if the sub directories directory match
                 image_subdirs = os.listdir(top_images_folder_path)
                 json_subdirs =os.listdir(top_json_folder_path)
+                # text_subdirs =os.listdir(top_text_folder_path)
                 missing_dir = set(image_subdirs) ^ set(json_subdirs)
 
                 # Move missing subfolder to failed folder
@@ -82,12 +87,15 @@ class AltoGenerator():
                             new_path = old_path + '_image'
                             os.rename(old_path, new_path)
                             shutil.move(new_path, new_failed_folder)
-                        
+
+                        if os.path.exists(os.path.join(top_text_folder_path, folder)):
+                            shutil.move(os.path.join(top_text_folder_path,folder), new_failed_folder)
+
                         if os.path.exists(os.path.join(top_json_folder_path, folder)):
                             shutil.move(os.path.join(top_json_folder_path,folder), new_failed_folder)
 
                 # Extract all JSON file names (without extension) from the current subfolder
-                json_files = [os.path.splitext(f)[0] for f in os.listdir(json_subfolder_path) if f.endswith(self.output_extension)]
+                json_files = [os.path.splitext(f)[0] for f in os.listdir(json_subfolder_path) if f.endswith(self.output_extension_json)]
 
                 # Code to move JSON and images to failed folder if either fails
                 if not json_files:
@@ -101,30 +109,37 @@ class AltoGenerator():
                         new_image_folder_name = os.path.join(image_subfolder_path + '_image')
                         shutil.move(new_image_folder_name, new_failed_folder)
 
+                    # check the text folders if the same folder exist and move its
+                    if os.path.exists(text_subfolder_path):
+                        new_text_folder_name = os.path.join(text_subfolder_path + '_text')
+                        shutil.move(new_text_folder_name, new_failed_folder)
+
 
                     raise FileNotFoundError("No JSON files found in the sub folder.")
                 else:
-                    # If no equivalent image file is found, move the exisiting json folder to failed folder
+                    # If no equivalent image file is found, move the exisiting json and text folder to failed folder
                     if not os.path.exists(image_subfolder_path):
                         # create a parent folder in the failed folder if it does not exist
                         os.makedirs(new_failed_folder, exist_ok=True)
 
                         shutil.move(os.path.join(image_subfolder_path, '_images'), new_failed_folder)
+                        shutil.move(os.path.join(text_subfolder_path, '_text'), new_failed_folder)
                         shutil.move(os.path.join(json_folder, top_json_folder), new_failed_folder) # Move the JSON folder
 
                         raise FileNotFoundError("No corresponding folder found in the images directory.") 
                     else:
                         # Creates a list of images from the images folders for further extraction
                         image_files = [os.path.splitext(f)[0] for f in os.listdir(image_subfolder_path) if f.endswith(image_extensions)]
+                        text_files = [os.path.splitext(f)[0] for f in os.listdir(text_subfolder_path) if f.endswith(self.output_extension_text)]
         
                         
-                    
                         # Splits the files/images name from the extension for comparison
                         json_file_names = {os.path.splitext(f)[0] for f in json_files}
                         image_file_names = {os.path.splitext(f)[0] for f in image_files}
+                        text_file_names = {os.path.splitext(f)[0] for f in text_files}
                     
                                 
-                        # Stops the script and move the json/image folder to the failed folder
+                        # Stops the script and move the json/image/text folder to the failed folder
                         if len(json_files) != len(image_files) or json_file_names != image_file_names:
                             # Create parant folder in sub directory
                             os.makedirs(new_failed_folder, exist_ok=True)
@@ -135,6 +150,11 @@ class AltoGenerator():
                             # os.rename(os.path.join(new_failed_folder, top_json_folder_path), new_path)
                             old_path = os.path.join(top_images_folder_path, subfolder)
                             new_path = old_path +  '_image'
+                            os.rename(old_path, new_path)  
+                            shutil.move(new_path, new_failed_folder)
+
+                            old_path = os.path.join(top_text_folder_path, subfolder)
+                            new_path = old_path +  '_text'
                             os.rename(old_path, new_path)  
                             shutil.move(new_path, new_failed_folder)
                             
@@ -160,12 +180,14 @@ class AltoGenerator():
                         processed_json_folder = os.path.join(processed_folder, top_json_folder, subfolder)
                         os.makedirs(processed_json_folder, exist_ok=True)
 
-                        # Rename and move the JSON and image folders
+                        # Rename and move the JSON, Text and image folders
                         json_renamed_folder = os.path.join(processed_json_folder, self.rename_failed_json)
                         image_renamed_folder = os.path.join(processed_json_folder, self.rename_failed_image)
+                        text_renamed_folder = os.path.join(processed_json_folder, self.rename_failed_text)
 
                         os.rename(json_subfolder_path, json_renamed_folder)
                         os.rename(image_subfolder_path, image_renamed_folder)
+                        os.rename(text_subfolder_path, text_renamed_folder)
 
                         print(f"Processing completed successfully for {top_json_folder}")
 
@@ -175,6 +197,9 @@ class AltoGenerator():
 
             if os.path.exists(top_images_folder_path) and len(os.listdir(top_images_folder_path)) == 0:
                 os.rmdir(top_images_folder_path)
+
+            if os.path.exists(top_text_folder_path) and len(os.listdir(top_text_folder_path)) == 0:
+                os.rmdir(top_text_folder_path)
 
 
     def generate_alto_xml(self, json_files, output_file, top_json_folder, subfolder):
@@ -216,7 +241,7 @@ class AltoGenerator():
     def process_json_files(self, json_files, top_json_folder, layout, subfolder):
 
         for json_file in json_files:
-            json_file_path = os.path.join(self.json_folder, top_json_folder,subfolder,json_file + self.output_extension)
+            json_file_path = os.path.join(self.json_folder, top_json_folder,subfolder,json_file + self.output_extension_json)
             json_file_name = os.path.splitext(json_file)[0]
 
             image_files = []

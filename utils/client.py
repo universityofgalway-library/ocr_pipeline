@@ -25,13 +25,15 @@ class TextractOCR:
         # Folders nmaes from config.py
         self.logs_folder = self.folders["logs_folder"]
         self.json_sorter = self.folders["json_sorter"]
+        self.text_sorter = self.folders["text_sorter"]
         self.images_sorter = self.folders["images_sorter"]
         self.failed_ocr_folder = self.folders["failed_ocr_folder"]
         self.low_confidence_folder = self.folders["low_confidence_folder"]
         
         # Parameters from config.py 
         self.image_extensions = self.parameters["image_extensions"]
-        self.output_extension = self.parameters["output_extension"]
+        self.output_extension_json = self.parameters["output_extension_json"]
+        self.output_extension_text = self.parameters["output_extension_text"]
         self.low_confidence_threshold = self.parameters["low_confidence_threshold"]
 
         # Logging initailisation has to come after logs folder name
@@ -52,13 +54,14 @@ class TextractOCR:
             os.rmdir(directory_path)
 
 
-    def extract_json_from_image(self, input_file: str, output_file: str) -> bool: 
+    def extract_from_image(self, input_file: str, output_file_json: str, output_file_text: str) -> bool: 
         """
         Extracts text from image in the input_folder's path using AWS Textract and saves the result as a JSON file to json_sorter folder.
 
         Args:
             input_file (str): The path to the input image file.
-            output_file (str): The path to the output JSON file.
+            output_file_json (str): The path to the output JSON file.
+            output_file_text (str): The path to the output TXT file.
         Returns:
             bool: True if the image was successfully processed and saved, False otherwise.
         """
@@ -98,11 +101,24 @@ class TextractOCR:
         
         
         try:
-            with open(output_file, "w", encoding="utf-8") as json_file:
+            with open(output_file_json, "w", encoding="utf-8") as json_file:
                 json.dump(response, json_file, indent=4)
-            print(f"Processed file saved to {output_file}")
+            print(f"Processed file saved to {output_file_json}")
         except Exception as e:
-            self.log_activity.error(f"Error saving file {output_file}: {e}")
+            self.log_activity.error(f"Error saving file {output_file_json}: {e}")
+
+        # Extract text from Textract response
+        extracted_text = ''
+        for item in response['Blocks']:
+            if item['BlockType'] == 'LINE':
+                extracted_text += item['Text'] + '\n'
+
+        try:
+            with open(output_file_text, "w", encoding="utf-8") as text_file:
+                text_file.write(extracted_text.strip())
+            print(f"Processed file saved to {output_file_text}")
+        except Exception as e:
+            self.log_activity.error(f"Error saving file {output_file_text}: {e}")
 
         return True
 
@@ -142,18 +158,21 @@ class TextractOCR:
                     
                     # Get the directory name for output
                     directory_name = os.path.relpath(root, parent_input_folder)
-                    output_directory = Path(self.json_sorter) / directory_name
-                    output_directory.mkdir(parents=True, exist_ok=True)
+                    output_directory_json = Path(self.json_sorter) / directory_name
+                    output_directory_text = Path(self.text_sorter) / directory_name
+                    output_directory_json.mkdir(parents=True, exist_ok=True)
+                    output_directory_text.mkdir(parents=True, exist_ok=True)
                     
                     # Prepare the output file path
-                    output_file = os.path.join(output_directory, filename.rsplit(".", 1)[0] + self.output_extension)
+                    output_file_json = os.path.join(output_directory_json, filename.rsplit(".", 1)[0] + self.output_extension_json)
+                    output_file_text = os.path.join(output_directory_text, filename.rsplit(".", 1)[0] + self.output_extension_text)
 
                     # Print file paths for debugging
                     print(f"Processing file: {input_file}")
-                    print(f"Output file: {output_file}")
+                    print(f"Output Json & Text file: {output_file_json}")
                     
                     # Move processed images file to images_sorter directory if OCR works
-                    if self.extract_json_from_image(input_file, output_file):
+                    if self.extract_from_image(input_file, output_file_json, output_file_text):
                         self.move_extracted_images(directory_name, input_file)
 
         # Remove empty folder from input resulting from failed OCR

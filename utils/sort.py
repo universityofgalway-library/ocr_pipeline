@@ -19,11 +19,14 @@ class SortOCR:
 
         self.logs_folder = self.folders["logs_folder"]
         self.json_folder = self.folders["json_folder"]
+        self.text_folder = self.folders["text_folder"]
         self.images_folder = self.folders["images_folder"]
+        self.text_sorter_folder = self.folders["text_sorter"]#
         self.json_sorter_folder = self.folders["json_sorter"]
         self.images_sorter_folder = self.folders["images_sorter"]         
         self.image_extensions = self.parameters["image_extensions"]
-        self.output_extension = self.parameters["output_extension"]
+        self.output_extension_text = self.parameters["output_extension_text"]
+        self.output_extension_json = self.parameters["output_extension_json"]
 
         # Logging initailisation has to come after logs folder name
         self.log_activity = LogActivities(self.logs_folder)
@@ -112,13 +115,16 @@ class SortOCR:
     def start_sorting(self):
         """
         Executes the main logic to process and organise OCR files by checking and processing subfolders in the 
-        JSON and images sorting directories.
+        JSON, Txt and Images sorting directories.
         
         Returns:
             None
         """
         if self.contains_subfolders(self.json_sorter_folder):
-            self.process_sub_folders(self.json_sorter_folder, self.output_extension, self.json_folder)
+            self.process_sub_folders(self.json_sorter_folder, self.output_extension_json, self.json_folder)
+
+        if self.contains_subfolders(self.text_sorter_folder):
+            self.process_sub_folders(self.text_sorter_folder, self.output_extension_text, self.text_folder)
 
         if self.contains_subfolders(self.images_sorter_folder):
             self.process_sub_folders(self.images_sorter_folder, self.image_extensions, self.images_folder)

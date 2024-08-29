@@ -34,7 +34,7 @@ class CoreConfig:
 
         The dictionary includes:
             - low_confidence_threshold: Integer threshold for low confidence.
-            - output_extension: File extension for output files.
+            - output_extension_json: File extension for output files.
             - image_extensions: Tuple of supported image file extensions.
 
         Returns:
@@ -44,9 +44,11 @@ class CoreConfig:
             "retry_delay" : 10,
             "max_retries" : 500, 
             "low_confidence_threshold" : 75, # Change to match the prefered avg confidence threshold 
-            "output_extension" : ".json",
-            "rename_failed_json" : "json_files",
-            "rename_failed_image" : "image_files",
+            "rename_failed_json" : "json",
+            "rename_failed_image" : "jpg",
+            "rename_failed_text" : "txt",
+            "output_extension_json" : ".json",
+            "output_extension_text" : ".txt",
             "image_extensions": ('.TIF', '.png', '.jpg', '.jpeg'),
         }
 
@@ -78,17 +80,19 @@ class CoreConfig:
             # core folders below
             "core_folders": root_folder,
             "logs_folder": f"{root_folder}/logs",
+            "text_folder": f"{root_folder}/txt",
             "json_folder": f"{root_folder}/json",
             "images_folder": f"{root_folder}/images",
             "json_sorter" : f"{root_folder}/json_sorter",
+            "text_sorter" : f"{root_folder}/text_sorter",
             "failed_folder": f"{root_folder}/failed_alto",
             "images_sorter" : f"{root_folder}/images_sorter",
             "failed_ocr_folder": f"{root_folder}/failed_ocr",
             "low_confidence_folder": f"{root_folder}/failed_low_confidence",
             
             # libnas path (Change to match your server or computer LibNas Path)
-            "libnas_input" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\input", 
-            "libnas_output" : r"Z:\\OCR outputs\\p155_kerby_miller\\Letters\\ocr_test\\output",
+            "libnas_input" : r"C:\Users\0131851S\Desktop\input", 
+            "libnas_output" : r"C:\Users\0131851S\Desktop\output",
         }
 
 
