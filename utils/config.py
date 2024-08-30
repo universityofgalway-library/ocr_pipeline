@@ -49,6 +49,7 @@ class CoreConfig:
             "rename_failed_text" : "txt",
             "output_extension_json" : ".json",
             "output_extension_text" : ".txt",
+            "overwrite_files" : False, # False to skip file overwrite 
             "image_extensions": ('.TIF', '.png', '.jpg', '.jpeg'),
         }
 

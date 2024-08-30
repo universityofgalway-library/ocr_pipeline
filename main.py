@@ -16,7 +16,6 @@ Classes:
 Usage:
     Run this script to perform OCR processing on images and sort the results into folders.
 """
-
 import time
 from datetime import datetime
 from utils.sort import SortOCR
@@ -50,7 +49,7 @@ if __name__ == '__main__':
 
     # Get required folders and files from libnas
     libnas.copy_from_libnas()
-    
+    # exit()
     # Define the parent input folder
     textract_ocr.select_image(input_folder)
     sort_ocr.start_sorting()
