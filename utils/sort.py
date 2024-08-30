@@ -21,7 +21,7 @@ class SortOCR:
         self.json_folder = self.folders["json_folder"]
         self.text_folder = self.folders["text_folder"]
         self.images_folder = self.folders["images_folder"]
-        self.text_sorter_folder = self.folders["text_sorter"]#
+        self.text_sorter_folder = self.folders["text_sorter"]
         self.json_sorter_folder = self.folders["json_sorter"]
         self.images_sorter_folder = self.folders["images_sorter"]         
         self.image_extensions = self.parameters["image_extensions"]
@@ -46,6 +46,22 @@ class SortOCR:
             if os.path.isdir(item_path):
                 return True
         return False
+
+    @staticmethod
+    def regroup_single_Files(extension, directory):
+        for entry in os.listdir(directory):
+            # Construct the full path
+            full_path = os.path.join(directory, entry)
+            
+            # Check if the entry is a file and ends with .txt
+            if os.path.isfile(full_path) and entry.endswith(extension):
+               split_file = entry.rsplit('_') 
+               folder_name = '_'.join(split_file[:-1])  
+               new_full_path = os.path.join(directory, folder_name)
+
+               os.makedirs(new_full_path, exist_ok=True)
+               shutil.move(full_path, new_full_path)
+
 
 
     def process_sub_folders(self, parent_folder_path: str, file_extention: str,destination: str) -> None:
@@ -76,7 +92,7 @@ class SortOCR:
     
     def split_files(self, parent_folder_path: str,filename: str,subfolder: str,destination: str) -> None:
         """
-        Moves a file from its original location to a new structured destination folder.
+        Moves a file from its original location to a new structured destination folder, after remove the excess text in the folder name.
 
         Args:
             parent_folder_path (str): Path to the parent folder containing the subfolder.
@@ -121,10 +137,13 @@ class SortOCR:
             None
         """
         if self.contains_subfolders(self.json_sorter_folder):
+            self.regroup_single_Files(self.output_extension_json, self.json_sorter_folder)
             self.process_sub_folders(self.json_sorter_folder, self.output_extension_json, self.json_folder)
 
         if self.contains_subfolders(self.text_sorter_folder):
+            self.regroup_single_Files(self.output_extension_text, self.text_sorter_folder)
             self.process_sub_folders(self.text_sorter_folder, self.output_extension_text, self.text_folder)
 
         if self.contains_subfolders(self.images_sorter_folder):
+            self.regroup_single_Files(self.image_extensions, self.images_sorter_folder)
             self.process_sub_folders(self.images_sorter_folder, self.image_extensions, self.images_folder)

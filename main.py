@@ -49,11 +49,13 @@ if __name__ == '__main__':
 
     # Get required folders and files from libnas
     libnas.copy_from_libnas()
-    # exit()
+    
     # Define the parent input folder
     textract_ocr.select_image(input_folder)
-    sort_ocr.start_sorting()
 
+    sort_ocr.start_sorting()
+    
+    # exit()
 
     while retry_count < max_retries:
         try:
