@@ -31,6 +31,7 @@ class AltoGenerator():
         self.processed_folder = self.folders["processed_folder"]
         
         # Parameters from config.py 
+        self.overwrite_files = self.parameters["overwrite_files"]
         self.image_extensions = self.parameters["image_extensions"]
         self.output_extension_json = self.parameters["output_extension_json"]
         self.output_extension_text = self.parameters["output_extension_text"]
@@ -185,9 +186,18 @@ class AltoGenerator():
                         image_renamed_folder = os.path.join(processed_json_folder, self.rename_failed_image)
                         text_renamed_folder = os.path.join(processed_json_folder, self.rename_failed_text)
 
+                        # try:
                         os.rename(json_subfolder_path, json_renamed_folder)
                         os.rename(image_subfolder_path, image_renamed_folder)
-                        os.rename(text_subfolder_path, text_renamed_folder)
+                        os.rename(text_subfolder_path, text_renamed_folder) 
+                        # except FileExistsError:
+                        #     if self.overwrite_files:
+                        #         os.remove(os.join(output_directory, filename))
+                        #         self.log_activity.overwrite(f"File {filename} was overwritten input folder: {output_directory}")
+                        #     else:
+                        #         self.log_activity.overwrite(f"File {filename} already exist in pipeline input folder, (overwrite turned off): {output_directory}")  
+                        # except Exception as e:
+                        #     self.log_activity.error(f"An error occurred while moving {filename} : {str(e)}")
 
                         print(f"Processing completed successfully for {top_json_folder}")
 

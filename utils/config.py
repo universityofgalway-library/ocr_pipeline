@@ -51,6 +51,14 @@ class CoreConfig:
             "output_extension_text" : ".txt",
             "overwrite_files" : False, # False to skip file overwrite 
             "image_extensions": ('.TIF', '.png', '.jpg', '.jpeg'),
+
+
+            # Error messages for logging
+            "low_confidence_error_message": "Low Confidence Score Error",
+            "exception_save_error_message": "Error saving file",
+            "ocr_processing_error_message": "Error processing OCR",
+            
+            # "low_confidence_error_message": "Low Confidence Score Error",
         }
 
     @staticmethod
@@ -81,15 +89,16 @@ class CoreConfig:
             # core folders below
             "core_folders": root_folder,
             "logs_folder": f"{root_folder}/logs",
+            "json_log_path" : f"{root_folder}/failed_jobs",
             "text_folder": f"{root_folder}/txt",
             "json_folder": f"{root_folder}/json",
             "images_folder": f"{root_folder}/images",
             "json_sorter" : f"{root_folder}/json_sorter",
             "text_sorter" : f"{root_folder}/text_sorter",
-            "failed_folder": f"{root_folder}/failed_alto",
+            "failed_folder": f"{root_folder}/failed_jobs/alto",
             "images_sorter" : f"{root_folder}/images_sorter",
-            "failed_ocr_folder": f"{root_folder}/failed_ocr",
-            "low_confidence_folder": f"{root_folder}/failed_low_confidence",
+            "failed_ocr_folder": f"{root_folder}/failed_jobs/jpg",
+            "low_confidence_folder": f"{root_folder}/failed_jobs/jpg",
             
             # libnas path (Change to match your server or computer LibNas Path)
             "libnas_input" : r"C:\Users\0131851S\Desktop\input", 

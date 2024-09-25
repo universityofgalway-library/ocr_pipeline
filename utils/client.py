@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from utils.config import CoreConfig
 from utils.log import LogActivities
+from utils.json_logger import JsonLogger
 
 class TextractOCR: 
     """
@@ -24,6 +25,7 @@ class TextractOCR:
         
         # Folders nmaes from config.py
         self.logs_folder = self.folders["logs_folder"]
+        self.json_log_path = self.folders["json_log_path"]
         self.json_sorter = self.folders["json_sorter"]
         self.text_sorter = self.folders["text_sorter"]
         self.images_sorter = self.folders["images_sorter"]
@@ -31,13 +33,19 @@ class TextractOCR:
         self.low_confidence_folder = self.folders["low_confidence_folder"]
         
         # Parameters from config.py 
+        self.overwrite_files = self.parameters["overwrite_files"]
         self.image_extensions = self.parameters["image_extensions"]
         self.output_extension_json = self.parameters["output_extension_json"]
         self.output_extension_text = self.parameters["output_extension_text"]
         self.low_confidence_threshold = self.parameters["low_confidence_threshold"]
+        self.low_confidence_error_message = self.parameters["low_confidence_error_message"]
+        self.exception_save_error_message = self.parameters["exception_save_error_message"]
+        self.ocr_processing_error_message = self.parameters["ocr_processing_error_message"]
+
 
         # Logging initailisation has to come after logs folder name
         self.log_activity = LogActivities(self.logs_folder)
+        self.json_logging = JsonLogger()
 
         # AWS Textract client
         self.client = boto3.client("textract")
@@ -73,6 +81,8 @@ class TextractOCR:
                     Document={"Bytes": document.read()}
                 )
         except Exception as e:
+            # Log error in JSON file
+            self.json_logging.log_error_as_json(self.ocr_processing_error_message,input_file )
             self.log_activity.error(f"Error processing OCR for file {input_file}: {e}")
             shutil.move(input_file, self.failed_ocr_folder)
             return False
@@ -92,10 +102,14 @@ class TextractOCR:
         else:
             # Handle case where no lines are detected
             average_confidence = 0
-
+ 
         # Compare average confidence with the threshold
         if average_confidence < self.low_confidence_threshold:
             print("Warning: The image may contain handwritten text, leading to potential OCR inaccuracies.")
+            
+            # Log error in JSON file
+            self.json_logging.log_error_as_json(self.low_confidence_error_message,input_file )
+
             shutil.move(input_file, self.low_confidence_folder)
             return False
         
@@ -105,6 +119,8 @@ class TextractOCR:
                 json.dump(response, json_file, indent=4)
             print(f"Processed file saved to {output_file_json}")
         except Exception as e:
+            # Log error in JSON file
+            self.json_logging.log_error_as_json(self.exception_save_error_message,input_file )
             self.log_activity.error(f"Error saving file {output_file_json}: {e}")
 
         # Extract text from Textract response
@@ -118,6 +134,8 @@ class TextractOCR:
                 text_file.write(extracted_text.strip())
             print(f"Processed file saved to {output_file_text}")
         except Exception as e:
+            # Log error in JSON file
+            self.json_logging.log_error_as_json(self.exception_save_error_message,input_file )
             self.log_activity.error(f"Error saving file {output_file_text}: {e}")
 
         return True
@@ -136,8 +154,19 @@ class TextractOCR:
         output_directory = Path(self.images_sorter) / directory_name
         output_directory.mkdir(parents=True, exist_ok=True)
 
-        shutil.move(file_path, output_directory)
+        filename = os.path.basename(file_path)
+        try:
+            shutil.move(file_path, output_directory)
+        except FileExistsError:
+            if self.overwrite_files:
+                os.remove(os.join(output_directory, filename))
+                self.log_activity.overwrite(f"File {filename} was overwritten input folder: {output_directory}")#
+            else:
+                self.log_activity.overwrite(f"File {filename} already exist in pipeline input folder, (overwrite turned off): {output_directory}")  
+        except Exception as e:
+            self.log_activity.error(f"An error occurred while moving {filename} : {str(e)}")
 
+        # Delete directory if its empty
         directory_moved = Path("input") / directory_name
         self.delete_empty_folder(directory_moved)
 
