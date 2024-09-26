@@ -7,7 +7,7 @@ This script automates the process of Optical Character Recognition (OCR) on imag
 - **Folder Verification:** Ensures that all required folders are present and configured correctly using the `CoreConfig` class.
 - **OCR Processing:** Performs OCR on images located in the input folder using the `TextractOCR` class.
 - **File Sorting:** Organises the processed OCR output files into appropriate directories using the `SortOCR` class.
-- **Error Handling:** Implements retry logic for robust execution, with logging of any errors encountered during the process.
+- **Error Handling:** Implements retry logic for robust execution, with logging of any errors encountered during the process in either Json or Txt format.
 - **ALTO XML Generation:** Generates ALTO XML files post-OCR processing.
 
 ## Classes
@@ -17,8 +17,10 @@ This script automates the process of Optical Character Recognition (OCR) on imag
 - **`SortOCR`:** Organises OCR output files into the correct directories.
 - **`LogActivities`:** Manages logging activities, capturing both routine operations and errors.
 - **`AltoGenerator`:** Generates ALTO XML files from OCR output.
-- **`LibNas`:** Manages file transfers to and from a network-attached storage (NAS) system.
+- **`LibNas`:** Manages file transfers to and from a network-attached storage (NAS) system, this can also serve as just the output and input, and does not have to be used with LibNas.
 - **`CheckEmptyFolder`:** Monitors the status of folders to ensure they are not empty before processing.
+- **`JsonLogger`:** Generates logs in Json format.
+
 
 ## Usage
 

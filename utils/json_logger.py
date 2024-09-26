@@ -18,7 +18,7 @@ class JsonLogger():
         self.json_log_path = self.folders["json_log_path"]
 
 
-    def log_error_as_json(self, error_message: str, split_file_name: str):
+    def log_error_as_json(self, error_message: str, split_file_name: str) -> None:
         json_log_file = os.path.join(self.json_log_path, "failed_jobs_log.json")
         current_date = datetime.now().strftime("%Y-%m-%d")
         log_data = {}

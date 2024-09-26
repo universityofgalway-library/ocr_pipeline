@@ -46,7 +46,7 @@ class LibNas:
         self.log_activity = LogActivities(self.logs_folder)
 
     @staticmethod
-    def move_and_override(dest_file):
+    def move_and_override(dest_file) -> None:
         """
         Removes the destination file if it exists and overwrite is True.
 
