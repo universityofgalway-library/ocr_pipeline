@@ -114,7 +114,10 @@ class LibNas:
             for root, dirs, _ in os.walk(self.processed_folder):
                 for dirname in dirs:
                     src_dir = os.path.join(root, dirname)
-
+                    # THIS MIGHT HE LINE RESPONSIBLE FOR THE DUPLICATE FOLDERS 
+                    # SUGGESTION WILL BE TO PASS THE STRING THROUGH A SET TO GET THE UNIQUE VALUES 
+                    # THEN REMOVE THE DUPLICATE VALUE AND MAKE IT A PATH AGAIN 
+                    
                     self.move_and_override(self.libnas_output)
                     shutil.move(src_dir, self.libnas_output)
         except FileExistsError:
