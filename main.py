@@ -61,7 +61,7 @@ if __name__ == '__main__':
         try:
             while check.is_json_folder_empty() and check.is_images_folder_empty():
                 current_datetime = datetime.now()
-                print(f'grab a cup of coffee, I am still running ... {current_datetime} ') 
+                print(f'Grab a cup of coffee, I am still running ... {current_datetime} ') 
                 
                 # Begin ALTO XML generation
                 AltoGenerator()  

@@ -105,7 +105,7 @@ class TextractOCR:
  
         # Compare average confidence with the threshold
         if average_confidence < self.low_confidence_threshold:
-            print("Warning: The image may contain handwritten text, leading to potential OCR inaccuracies.")
+            print("WARNING: The image may contain handwritten text, leading to potential OCR inaccuracies.")
             
             # Log error in JSON file
             self.json_logging.log_error_as_json(self.low_confidence_error_message,input_file )
