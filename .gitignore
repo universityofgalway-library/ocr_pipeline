@@ -6,6 +6,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+ 
+core_folders/
+input/ 
+output/
 
 # C extensions
 *.so
