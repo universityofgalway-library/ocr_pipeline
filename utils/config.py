@@ -104,9 +104,9 @@ class CoreConfig:
             # Paths to the input and output folders 
             # Сan be on the local machine / server / LibNAS 
             # NB! LibNAS causes timeout issues
-            "libnas_input" : r"C:\Users\0131851S\Desktop\input", 
+            "libnas_input" : r"/home/sbgchidi/Desktop/coding/ocr_pipeline/input", 
             # OUTPUT MUST BE AN ABSOLUTE PATH!
-            "libnas_output" : r"C:\Users\0131851S\Desktop\output", 
+            "libnas_output" : r"/home/sbgchidi/Desktop/coding/ocr_pipeline/output", 
         }
 
 

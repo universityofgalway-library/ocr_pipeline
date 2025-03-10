@@ -3,9 +3,13 @@ import json
 import boto3
 import shutil
 from pathlib import Path
+from dotenv import load_dotenv
 from utils.config import CoreConfig
 from utils.log import LogActivities
 from utils.json_logger import JsonLogger
+
+# Load environment variables from .env file
+load_dotenv()
 
 class TextractOCR: 
     """
@@ -48,7 +52,10 @@ class TextractOCR:
         self.json_logging = JsonLogger()
 
         # AWS Textract client
-        self.client = boto3.client("textract")
+        self.client = boto3.client("textract",
+                    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+                    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+                    region_name=os.getenv("AWS_REGION"))
 
 
     def delete_empty_folder(self, directory_path: str) -> None:
