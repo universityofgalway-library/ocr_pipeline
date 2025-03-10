@@ -69,7 +69,7 @@ if __name__ == '__main__':
                 time.sleep(3)
             else:
                 current_datetime = datetime.now()
-                log_activity.error(f'Failed to run, the JSON / Images folder is empty ... {current_datetime} ')
+                log_activity.error(f'The Pipeline failed to run, because the JSON / Images folder is empty ... {current_datetime} ')
                 break  # Exit the retry loop if successful
         except (ValueError, FileNotFoundError) as e:
             log_activity.error(f"Error encountered: {e}")
