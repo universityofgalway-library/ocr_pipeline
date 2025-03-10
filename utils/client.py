@@ -113,6 +113,7 @@ class TextractOCR:
         # Compare average confidence with the threshold
         if average_confidence < self.low_confidence_threshold:
             print("WARNING: The image may contain handwritten text, leading to potential OCR inaccuracies.")
+            self.log_activity.processing("WARNING: The image may contain handwritten text, leading to potential OCR inaccuracies.")
             
             # Log error in JSON file
             self.json_logging.log_error_as_json(self.low_confidence_error_message,input_file )
@@ -125,6 +126,7 @@ class TextractOCR:
             with open(output_file_json, "w", encoding="utf-8") as json_file:
                 json.dump(response, json_file, indent=4)
             print(f"Processed file saved to {output_file_json}")
+            self.log_activity.processing(f"Processed file saved to {output_file_json}")
         except Exception as e:
             # Log error in JSON file
             self.json_logging.log_error_as_json(self.exception_save_error_message,input_file )
@@ -140,6 +142,7 @@ class TextractOCR:
             with open(output_file_text, "w", encoding="utf-8") as text_file:
                 text_file.write(extracted_text.strip())
             print(f"Processed file saved to {output_file_text}")
+            self.log_activity.processing(f"Processed file saved to {output_file_text}")
         except Exception as e:
             # Log error in JSON file
             self.json_logging.log_error_as_json(self.exception_save_error_message,input_file )
@@ -206,6 +209,8 @@ class TextractOCR:
                     # Print file paths for debugging
                     print(f"Processing file: {input_file}")
                     print(f"Output Json & Text file: {output_file_json}")
+                    self.log_activity.processing(f"Processing file: {input_file}")
+                    self.log_activity.processing(f"Output Json & Text file: {output_file_json}")
                     
                     # Move processed images file to images_sorter directory if OCR works
                     if self.extract_from_image(input_file, output_file_json, output_file_text):

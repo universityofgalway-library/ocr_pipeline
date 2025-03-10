@@ -116,6 +116,8 @@ class SortOCR:
             moving_path = os.path.join(new_file_folder_path, filename)
             if os.path.exists(moving_path):
                 print(f"Deleting existing folder {moving_path} ...")
+                self.log_activity.processing(f"Deleting existing folder {moving_path} ...")
+                
                 os.remove(moving_path)
             
             # Log moving of files 

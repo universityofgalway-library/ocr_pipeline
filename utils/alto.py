@@ -200,6 +200,8 @@ class AltoGenerator():
                         #     self.log_activity.error(f"An error occurred while moving {filename} : {str(e)}")
 
                         print(f"Processing completed successfully for {top_json_folder}")
+                        self.log_activity.processing(f"Processing completed successfully for {top_json_folder}")
+                        
 
             # Check if the folder exists and is empty
             if os.path.exists(top_json_folder_path) and len(os.listdir(top_json_folder_path)) == 0:

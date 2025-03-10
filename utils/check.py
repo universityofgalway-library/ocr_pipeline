@@ -1,6 +1,7 @@
 import os
 import shutil
 from utils.config import CoreConfig
+from utils.log import LogActivities
 
 class CheckEmptyFolder:
     """
@@ -21,12 +22,15 @@ class CheckEmptyFolder:
         core_config = CoreConfig()
         self.folders = core_config.requiredFolders()
         
+
         # Folders nmaes from config.py
         self.json_folder = self.folders["json_folder"]
+        self.logs_folder = self.folders["logs_folder"]
         self.core_folders = self.folders["core_folders"]
         self.images_folder = self.folders["images_folder"]
 
-        
+        # Logging initailisation has to come after logs folder name
+        self.log_activity = LogActivities(self.logs_folder)
 
     def is_json_folder_empty(self) -> bool:
         """
@@ -73,6 +77,7 @@ class CheckEmptyFolder:
                 sub_dir_path = os.path.join(root, sub_dir)
                 if self.is_folder_empty(sub_dir_path):
                     print(f"Deleting empty directory: {sub_dir_path}")
+                    self.log_activity.processing(f"Deleting empty directory: {sub_dir_path}")
                     os.rmdir(sub_dir_path)
                     
         # Check if the parent folder "core_folders" is empty or contains on a .keep file
@@ -83,11 +88,13 @@ class CheckEmptyFolder:
                 shutil.rmtree(self.core_folders)
             except OSError as e:
                 print(f"Error deleting {self.core_folders}: {e}")
+                self.log_activity.processing(f"Error deleting {self.core_folders}: {e}")
         else:
             try:
                 os.rmdir(self.core_folders)         
             except OSError as e:
                 print("Core folder contains non empty folder")
+                self.log_activity.processing("Core folder contains non empty folder")
     
     def is_folder_empty(self, folder_path) -> bool:
         """Check if a given folder is empty."""
