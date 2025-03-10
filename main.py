@@ -83,3 +83,5 @@ if __name__ == '__main__':
     # Return processed files to libNas
     libnas.send_to_libnas()
     
+    # Clean up core folders and empty sub directories
+    check.is_core_folder_empty()

@@ -89,8 +89,8 @@ class CoreConfig:
             "processed_folder": f"{root_folder}/success_alto",
             # core folders below
             "core_folders": root_folder,
-            "logs_folder": f"{root_folder}/logs",
-            "json_log_path" : f"{root_folder}/failed_jobs",
+            "logs_folder": f"logs",
+            "json_log_path" : f"failed_jobs",
             "text_folder": f"{root_folder}/txt",
             "json_folder": f"{root_folder}/json",
             "images_folder": f"{root_folder}/images",
