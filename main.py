@@ -61,7 +61,8 @@ if __name__ == '__main__':
         try:
             while check.is_json_folder_empty() and check.is_images_folder_empty():
                 current_datetime = datetime.now()
-                print(f'grab a cup of coffee, I am still running ... {current_datetime} ') 
+                print(f'Grab a cup of coffee, I am still running ... {current_datetime} ') 
+                log_activity.processing(f'Grab a cup of coffee, I am still running ... {current_datetime} ')
                 
                 # Begin ALTO XML generation
                 AltoGenerator()  
@@ -69,7 +70,7 @@ if __name__ == '__main__':
                 time.sleep(3)
             else:
                 current_datetime = datetime.now()
-                log_activity.error(f'Failed to run, the JSON / Images folder is empty ... {current_datetime} ')
+                log_activity.error(f'The Pipeline failed to run, because the JSON / Images folder is empty ... {current_datetime} ')
                 break  # Exit the retry loop if successful
         except (ValueError, FileNotFoundError) as e:
             log_activity.error(f"Error encountered: {e}")
@@ -83,3 +84,5 @@ if __name__ == '__main__':
     # Return processed files to libNas
     libnas.send_to_libnas()
     
+    # Clean up core folders and empty sub directories
+    check.is_core_folder_empty()

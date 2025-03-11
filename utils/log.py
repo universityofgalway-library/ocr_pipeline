@@ -21,7 +21,7 @@ class LogActivities:
         Returns:
             None
         """
-        log_file_path = f"{self.logs_folder}/avg_confidence_score.txt"
+        log_file_path = f"{self.logs_folder}/avg_confidence_score.log"
         try:
             with open(log_file_path, "a", encoding="UTF-8") as f:
                 f.write(f"{datetime.now()} - {input_file}: {average_confidence}\n")
@@ -38,7 +38,7 @@ class LogActivities:
         Returns:
             None
         """
-        log_file_path = f"{self.logs_folder}/sorting_activities.txt"
+        log_file_path = f"{self.logs_folder}/sorting.log"
         try:
             with open(log_file_path, "a", encoding="UTF-8") as f:
                 f.write(f"{datetime.now()} - {message} \n")
@@ -55,7 +55,7 @@ class LogActivities:
         Returns:
             None
         """
-        log_file_path = f"{self.logs_folder}/errors.txt"
+        log_file_path = f"{self.logs_folder}/errors.log"
         self.messageLogging(log_file_path, message)
 
     def overwrite(self, message: str) -> None:
@@ -68,6 +68,18 @@ class LogActivities:
             None
         """
         log_file_path = f"{self.logs_folder}/overwrite.txt"
+        self.messageLogging(log_file_path, message)
+        
+    def processing(self, message: str) -> None:
+        """
+        Logs terminal outputs to the a processing log file
+
+        Args:
+            message (str): The name of the input file.
+        Returns:
+            None
+        """
+        log_file_path = f"{self.logs_folder}/processing.log"
         self.messageLogging(log_file_path, message)
     
     @staticmethod

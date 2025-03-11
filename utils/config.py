@@ -43,22 +43,21 @@ class CoreConfig:
         return {
             "retry_delay" : 10,
             "max_retries" : 500, 
-            "low_confidence_threshold" : 75, # Change to match the prefered avg confidence threshold 
+            "low_confidence_threshold" : 50, # Change to match the prefered avg confidence threshold 
             "rename_failed_json" : "json",
             "rename_failed_image" : "jpg",
             "rename_failed_text" : "txt",
             "output_extension_json" : ".json",
             "output_extension_text" : ".txt",
-            "overwrite_files" : False, # False to skip file overwrite 
+            "overwrite_files" : True, # False to skip file overwrite 
             "image_extensions": ('.TIF', '.png', '.jpg', '.jpeg'),
 
 
             # Error messages for logging
-            "low_confidence_error_message": "Low Confidence Score Error",
+            "low_confidence_error_message": "Low confidence score error",
             "exception_save_error_message": "Error saving file",
-            "ocr_processing_error_message": "Error processing OCR",
+            "ocr_processing_error_message": "OCR processing error",
             
-            # "low_confidence_error_message": "Low Confidence Score Error",
         }
 
     @staticmethod
@@ -83,13 +82,15 @@ class CoreConfig:
             dict: Dictionary mapping folder names to their paths.
         """
         root_folder = "core_folders"
+        # FOLDERS BENEATH ARE CREATED AUTOMATICALLY
+        # NAMES CAN BE CHANGED IF REQUIRED, KEYS CANNOT
         return {
             "input_folder": "input",
             "processed_folder": f"{root_folder}/success_alto",
             # core folders below
             "core_folders": root_folder,
-            "logs_folder": f"{root_folder}/logs",
-            "json_log_path" : f"{root_folder}/failed_jobs",
+            "logs_folder": f"logs",
+            "json_log_path" : f"failed_jobs",
             "text_folder": f"{root_folder}/txt",
             "json_folder": f"{root_folder}/json",
             "images_folder": f"{root_folder}/images",
@@ -100,9 +101,12 @@ class CoreConfig:
             "failed_ocr_folder": f"{root_folder}/failed_jobs/jpg",
             "low_confidence_folder": f"{root_folder}/failed_jobs/jpg",
             
-            # libnas path (Change to match your server or computer LibNas Path)
-            "libnas_input" : r"C:\Users\0131851S\Desktop\input", 
-            "libnas_output" : r"C:\Users\0131851S\Desktop\output",
+            # Paths to the input and output folders 
+            # Сan be on the local machine / server / LibNAS 
+            # NB! LibNAS causes timeout issues
+            "libnas_input" : r"/home/sbgchidi/Desktop/coding/ocr_pipeline/input", 
+            # OUTPUT MUST BE AN ABSOLUTE PATH!
+            "libnas_output" : r"/home/sbgchidi/Desktop/coding/ocr_pipeline/output", 
         }
 
 
