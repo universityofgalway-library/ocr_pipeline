@@ -28,6 +28,7 @@ class CheckEmptyFolder:
         self.logs_folder = self.folders["logs_folder"]
         self.core_folders = self.folders["core_folders"]
         self.images_folder = self.folders["images_folder"]
+        self.input_folder = self.folders["input_folder"]
 
         # Logging initailisation has to come after logs folder name
         self.log_activity = LogActivities(self.logs_folder)
@@ -72,7 +73,7 @@ class CheckEmptyFolder:
         Returns:
             void
         """
-        for root, dirs, files in os.walk(self.core_folders, topdown=False):
+        for root, dirs, _ in os.walk(self.core_folders, topdown=False):
             for sub_dir in dirs:
                 sub_dir_path = os.path.join(root, sub_dir)
                 if self.is_folder_empty(sub_dir_path):
@@ -92,6 +93,37 @@ class CheckEmptyFolder:
         else:
             try:
                 os.rmdir(self.core_folders)         
+            except OSError as e:
+                print("Core folder contains non empty folder")
+                self.log_activity.processing("Core folder contains non empty folder")
+                
+    def is_input_folder_empty(self) -> None:
+        """
+        Checks if the input folder is empty or contains empty directories other than '.keep'.
+
+        Returns:
+            void
+        """
+        for root, dirs, _ in os.walk(self.input_folder, topdown=False):
+            for sub_dir in dirs:
+                sub_dir_path = os.path.join(root, sub_dir)
+                if self.is_folder_empty(sub_dir_path):
+                    print(f"Deleting empty directory: {sub_dir_path}")
+                    self.log_activity.processing(f"Deleting empty directory: {sub_dir_path}")
+                    os.rmdir(sub_dir_path)
+                    
+        # Check if the parent folder "core_folders" is empty or contains on a .keep file
+        main_files  = os.listdir(self.input_folder)
+        
+        if main_files == [".keep"]:
+            try:
+                shutil.rmtree(self.input_folder)
+            except OSError as e:
+                print(f"Error deleting {self.input_folder}: {e}")
+                self.log_activity.processing(f"Error deleting {self.input_folder}: {e}")
+        else:
+            try:
+                os.rmdir(self.input_folder)         
             except OSError as e:
                 print("Core folder contains non empty folder")
                 self.log_activity.processing("Core folder contains non empty folder")
