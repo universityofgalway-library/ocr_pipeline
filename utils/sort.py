@@ -124,7 +124,8 @@ class SortOCR:
             # Log the average confidence score of each file
             self.log_activity.sorting(f"Moving file from {original_file_path} to {new_file_folder_path}")
             print(f"Sorting script still running ... {datetime.now()}")
-
+            self.log_activity.processing(f"Sorting script still running ... {datetime.now()}")
+            
             shutil.move(original_file_path, new_file_folder_path)
 
         except Exception as e:
