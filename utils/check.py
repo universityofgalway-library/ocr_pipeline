@@ -170,8 +170,27 @@ class CheckEmptyFolder:
                 print(f"Deleting empty directory: {root}")
                 self.log_activity.processing(f"Deleting empty directory: {root}")
                 os.rmdir(root)
-    
+                
+        self._is_output_folder_clean()
     
     def is_folder_empty(self, folder_path) -> bool:
         """Check if a given folder is empty."""
         return not any(os.scandir(folder_path))
+    
+    
+    def _is_output_folder_clean(self):
+        """Remove extra folders from the output folder."""
+        output_folder = self.output_folder  # e.g. 'libnas_output'
+
+        # List the folder names to clean from the output folder.
+        folders_to_delete = [
+        os.path.basename(self.json_folder),
+        os.path.basename( self.images_folder),
+        'jpg'
+        ]
+        
+        for folder in folders_to_delete:
+            folder_path = os.path.join(output_folder, folder)
+            if os.path.exists(folder_path):
+                print(f"Deleting folder: {folder_path}")
+                shutil.rmtree(folder_path)
