@@ -25,6 +25,7 @@ class CheckEmptyFolder:
         
 
         # Folders nmaes from config.py
+        self.text_folder = self.folders["text_folder"]
         self.json_folder = self.folders["json_folder"]
         self.logs_folder = self.folders["logs_folder"]
         self.core_folders = self.folders["core_folders"]
@@ -82,7 +83,7 @@ class CheckEmptyFolder:
         for root, dirs, _ in os.walk(self.core_folders, topdown=False):
             for sub_dir in dirs:
                 sub_dir_path = os.path.join(root, sub_dir)
-                if self.is_folder_empty(sub_dir_path):
+                if self._is_folder_empty_(sub_dir_path):
                     print(f"Deleting empty directory: {sub_dir_path}")
                     self.log_activity.processing(f"Deleting empty directory: {sub_dir_path}")
                     os.rmdir(sub_dir_path)
@@ -113,7 +114,7 @@ class CheckEmptyFolder:
         for root, dirs, _ in os.walk(self.input_folder, topdown=False):
             for sub_dir in dirs:
                 sub_dir_path = os.path.join(root, sub_dir)
-                if self.is_folder_empty(sub_dir_path):
+                if self._is_folder_empty_(sub_dir_path):
                     print(f"Deleting empty directory: {sub_dir_path}")
                     self.log_activity.processing(f"Deleting empty directory: {sub_dir_path}")
                     os.rmdir(sub_dir_path)
@@ -185,8 +186,38 @@ class CheckEmptyFolder:
                 print(f"Deleting empty directory: {root}")
                 self.log_activity.processing(f"Deleting empty directory: {root}")
                 os.rmdir(root)
+        
+        self._is_output_folder_clean_()
     
     
-    def is_folder_empty(self, folder_path) -> bool:
+    """
+    Private Methods
+    """
+    def _is_folder_empty_(self, folder_path) -> bool:
         """Check if a given folder is empty."""
         return not any(os.scandir(folder_path))
+    
+    def _is_output_folder_clean_(self):
+        # Get the output folder path from the object attribute
+        output_folder = self.output_folder
+
+        # List of folder names to delete within the output folder.
+        folders_to_delete = [
+            os.path.basename(self.json_folder),
+            os.path.basename(self.text_folder),
+            "jpg" # This should be changes if the target directory changes
+        ]
+        
+        # Iterate over each folder name in the list
+        for folder in folders_to_delete:
+            # Construct the full path to the folder to be deleted by joining the output folder path and the folder name
+            folder_path = os.path.join(output_folder, folder)
+            
+            # Check if the folder actually exists
+            if os.path.exists(folder_path):
+                # If it exists, print a message indicating that the folder will be deleted
+                print(f"Deleting folder: {folder_path}")
+                
+                # Recursively delete the folder and all its contents using shutil.rmtree
+                shutil.rmtree(folder_path)
+
