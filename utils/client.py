@@ -171,14 +171,13 @@ class TextractOCR:
         try:
             if self.overwrite_files and os.path.exists(dest_path):
                 shutil.rmtree(dest_path)
+                self.log_activity.overwrite(f"File {filename} was overwritten input folder: {output_directory}")
                 
             shutil.move(file_path, output_directory)
         except FileExistsError:
-            if self.overwrite_files:
-                os.remove(os.join(output_directory, filename))
-                self.log_activity.overwrite(f"File {filename} was overwritten input folder: {output_directory}")#
-            else:
-                self.log_activity.overwrite(f"File {filename} already exist in pipeline input folder, (overwrite turned off): {output_directory}")  
+            # os.remove(os.join(output_directory, filename))
+            # else:
+            self.log_activity.overwrite(f"File {filename} already exist in pipeline input folder, (overwrite turned off): {output_directory}")  
         except Exception as e:
             self.log_activity.error(f"An error occurred while moving {filename} : {str(e)}")
 

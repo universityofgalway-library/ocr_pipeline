@@ -67,7 +67,7 @@ class LogActivities:
         Returns:
             None
         """
-        log_file_path = f"{self.logs_folder}/overwrite.txt"
+        log_file_path = f"{self.logs_folder}/overwrite.log"
         self.messageLogging(log_file_path, message)
         
     def processing(self, message: str) -> None:
