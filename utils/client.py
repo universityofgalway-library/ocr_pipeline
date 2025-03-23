@@ -165,7 +165,13 @@ class TextractOCR:
         output_directory.mkdir(parents=True, exist_ok=True)
 
         filename = os.path.basename(file_path)
+        
+        # Destination folder 
+        dest_path = os.path.join(output_directory, os.path.basename(file_path))
         try:
+            if self.overwrite_files and os.path.exists(dest_path):
+                shutil.rmtree(dest_path)
+                
             shutil.move(file_path, output_directory)
         except FileExistsError:
             if self.overwrite_files:

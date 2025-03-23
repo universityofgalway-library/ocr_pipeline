@@ -21,16 +21,20 @@ class CheckEmptyFolder:
          
         core_config = CoreConfig()
         self.folders = core_config.requiredFolders()
+        self.parameters = core_config.requiredValues()
         
 
         # Folders nmaes from config.py
-        
         self.json_folder = self.folders["json_folder"]
         self.logs_folder = self.folders["logs_folder"]
         self.core_folders = self.folders["core_folders"]
         self.input_folder = self.folders["input_folder"]
         self.output_folder = self.folders["libnas_output"]
         self.images_folder = self.folders["images_folder"]
+        
+        
+        # Parameters from config.py 
+        self.overwrite_files = self.parameters["overwrite_files"]
     
 
         # Logging initailisation has to come after logs folder name
@@ -154,6 +158,17 @@ class CheckEmptyFolder:
                             self.log_activity.processing(f"Merging directory: {child_path} into {destination}")
                             for child_item in os.listdir(child_path):
                                 src_path = os.path.join(child_path, child_item)
+                                
+                                dest_path = os.path.join(destination, os.path.basename(src_path))
+                                if self.overwrite_files and os.path.exists(dest_path):
+                                    # Check if dest_path is a directory or file
+                                    if os.path.isdir(dest_path):
+                                        shutil.rmtree(dest_path)
+                                    elif os.path.isfile(dest_path):
+                                        os.remove(dest_path)
+                                    else:
+                                        print(f"Skipping removal for unknown type: {dest_path}")
+                                    
                                 shutil.move(src_path, destination)
                             os.rmdir(child_path)
                         else:
@@ -170,27 +185,8 @@ class CheckEmptyFolder:
                 print(f"Deleting empty directory: {root}")
                 self.log_activity.processing(f"Deleting empty directory: {root}")
                 os.rmdir(root)
-                
-        self._is_output_folder_clean()
+    
     
     def is_folder_empty(self, folder_path) -> bool:
         """Check if a given folder is empty."""
         return not any(os.scandir(folder_path))
-    
-    
-    def _is_output_folder_clean(self):
-        """Remove extra folders from the output folder."""
-        output_folder = self.output_folder  # e.g. 'libnas_output'
-
-        # List the folder names to clean from the output folder.
-        folders_to_delete = [
-        os.path.basename(self.json_folder),
-        os.path.basename( self.images_folder),
-        'jpg'
-        ]
-        
-        for folder in folders_to_delete:
-            folder_path = os.path.join(output_folder, folder)
-            if os.path.exists(folder_path):
-                print(f"Deleting folder: {folder_path}")
-                shutil.rmtree(folder_path)
