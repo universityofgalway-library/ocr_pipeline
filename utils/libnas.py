@@ -121,8 +121,11 @@ class LibNas:
 
                     self.move_and_override(self.libnas_output)
                     shutil.move(src_dir, self.libnas_output)
+
+                    
         except FileExistsError:
-            print(f"Folder already exist on LibNas: {self.libnas_output}")
+            print(f"Folder already exist on LibNas or Output destination: {self.libnas_output}")
+            self.log_activity.processing(f"Folder already exist on LibNas or Output destination: {self.libnas_output}")
         except Exception as e:
             self.log_activity.error(f"An error occurred while moving to LibNas: {str(e)}")
 

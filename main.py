@@ -55,7 +55,6 @@ if __name__ == '__main__':
 
     sort_ocr.start_sorting()
     
-    # exit()
 
     while retry_count < max_retries:
         try:
@@ -84,5 +83,7 @@ if __name__ == '__main__':
     # Return processed files to libNas
     libnas.send_to_libnas()
     
-    # Clean up core folders and empty sub directories
+    # Clean up core folders & input folder and output folder along with their respective empty sub directories
     check.is_core_folder_empty()
+    check.is_input_folder_empty()
+    check.is_output_folder_structured()
